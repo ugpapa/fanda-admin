@@ -18,6 +18,10 @@ interface Notice {
   isPopup: boolean;
   isImportant: boolean;
   content: string;
+  imageUrl?: string;
+  popupWidth?: number;
+  popupHeight?: number;
+  popupPosition?: 'center' | 'top' | 'bottom';
 }
 
 // 모달 컴포넌트를 동적으로 임포트
@@ -70,6 +74,11 @@ const NoticePage = () => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [isImportant, setIsImportant] = useState(false);
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string>('');
+  const [popupWidth, setPopupWidth] = useState<number>(800);
+  const [popupHeight, setPopupHeight] = useState<number>(600);
+  const [popupPosition, setPopupPosition] = useState<'center' | 'top' | 'bottom'>('center');
 
   useEffect(() => {
     setMounted(true);
@@ -86,6 +95,18 @@ const NoticePage = () => {
     setShowNoticeDetail(true);
   };
 
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setImageFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleNewNotice = () => {
     setEditMode(false);
     setSelectedNotice({
@@ -98,8 +119,13 @@ const NoticePage = () => {
       isPopup: false,
       isImportant: false,
       content: "",
+      popupWidth: 800,
+      popupHeight: 600,
+      popupPosition: 'center'
     });
     setShowNoticeForm(true);
+    setImagePreview('');
+    setImageFile(null);
   };
 
   const handleEditNotice = (notice: Notice) => {
@@ -108,7 +134,7 @@ const NoticePage = () => {
     setShowNoticeForm(true);
   };
 
-  const handleFormSubmit = (e: React.FormEvent) => {
+  const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!selectedNotice?.title || !selectedNotice?.content) {
@@ -116,10 +142,23 @@ const NoticePage = () => {
       return;
     }
 
+    let imageUrl = selectedNotice.imageUrl;
+
+    if (imageFile) {
+      // TODO: 실제 이미지 업로드 API 호출
+      // const formData = new FormData();
+      // formData.append('image', imageFile);
+      // const response = await uploadImage(formData);
+      // imageUrl = response.imageUrl;
+      imageUrl = imagePreview; // 임시로 base64 이미지 사용
+    }
+
     if (editMode) {
       // 공지사항 수정
       setNotices(notices.map(notice => 
-        notice.id === selectedNotice.id ? selectedNotice : notice
+        notice.id === selectedNotice.id 
+          ? { ...selectedNotice, imageUrl } 
+          : notice
       ));
     } else {
       // 새 공지사항 작성
@@ -130,17 +169,23 @@ const NoticePage = () => {
         authorRole: "일반관리자",
         createdAt: formatDate(),
         views: 0,
+        imageUrl,
+        popupWidth,
+        popupHeight,
+        popupPosition
       };
       setNotices([newNotice, ...notices]);
     }
 
     setShowNoticeForm(false);
     setSelectedNotice(null);
+    setImagePreview('');
+    setImageFile(null);
   };
 
   const handleInputChange = (
     field: keyof Notice,
-    value: string | boolean
+    value: string | boolean | number
   ) => {
     if (selectedNotice) {
       setSelectedNotice({
@@ -215,6 +260,12 @@ const NoticePage = () => {
               </button>
             </div>
           </div>
+          <button
+            onClick={handleNewNotice}
+            className='px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white rounded-full flex items-center gap-2 transition-all duration-200 shadow-md hover:shadow-lg'>
+            <Plus className='w-5 h-5' />
+            <span className="font-semibold">공지사항 쓰기</span>
+          </button>
         </div>
 
         <div className='overflow-x-auto'>
@@ -292,8 +343,16 @@ const NoticePage = () => {
             onClose={() => setShowNoticeForm(false)}
             onSubmit={handleFormSubmit}
             onChange={handleInputChange}
+            onImageChange={handleImageChange}
             notice={selectedNotice}
             editMode={editMode}
+            imagePreview={imagePreview}
+            popupWidth={popupWidth}
+            popupHeight={popupHeight}
+            popupPosition={popupPosition}
+            onPopupWidthChange={setPopupWidth}
+            onPopupHeightChange={setPopupHeight}
+            onPopupPositionChange={setPopupPosition}
           />
         )}
 
