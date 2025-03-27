@@ -67,6 +67,18 @@ const ContractsPage = () => {
     return matchesSearch && matchesType && matchesStatus;
   });
 
+  const handleContractUpdate = (updatedContract: Contract) => {
+    setContracts(prev => prev.map(contract => 
+      contract.id === updatedContract.id ? updatedContract : contract
+    ));
+  };
+
+  const handleStatusChange = (contractId: number, newStatus: Contract['status']) => {
+    setContracts(prev => prev.map(contract => 
+      contract.id === contractId ? { ...contract, status: newStatus } : contract
+    ));
+  };
+
   return (
     <AdminLayout>
       <div className="p-6">

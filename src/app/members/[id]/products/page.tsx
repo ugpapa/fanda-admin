@@ -98,7 +98,7 @@ for (let i = 5; i <= 50; i++) {
   });
 }
 
-export default function MemberProductsPage({ params }: { params: { id: string } }) {
+const Page = ({ _params }: { _params: { id: string } }) => {
   const router = useRouter();
   const [activities, setActivities] = useState<ProductActivity[]>(mockActivities);
   const [filteredActivities, setFilteredActivities] = useState<ProductActivity[]>(mockActivities);
@@ -351,4 +351,6 @@ export default function MemberProductsPage({ params }: { params: { id: string } 
       </div>
     </div>
   );
-} 
+}
+
+export default Page; 

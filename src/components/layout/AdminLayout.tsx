@@ -16,7 +16,6 @@ import {
   Tags,
   Settings,
   LogOut,
-  Menu,
 } from "lucide-react";
 import { useRouter, usePathname } from "next/navigation";
 import Image from "next/image";
@@ -142,6 +141,10 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       default:
         return '대시보드';
     }
+  };
+
+  const handleNotificationsClick = () => {
+    handleNotificationsToggle();
   };
 
   return (

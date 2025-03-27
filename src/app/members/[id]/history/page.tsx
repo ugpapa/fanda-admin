@@ -4,76 +4,66 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Download, ChevronLeft, ChevronRight, Calendar, Filter } from "lucide-react";
+import { ArrowLeft, Download, ChevronLeft, ChevronRight } from 'lucide-react';
 import { format } from 'date-fns';
+import { Search } from 'lucide-react';
 
 interface HistoryItem {
-  id: number;
-  type: "login" | "logout" | "profile_update" | "password_change";
+  id: string;
+  type: string;
   description: string;
-  createdAt: string;
-  ipAddress: string;
-  details?: {
-    [key: string]: any;
-  };
+  date: string;
 }
 
 // 임시 데이터 (더 많은 데이터 추가)
 const mockHistory: HistoryItem[] = [
   {
-    id: 1,
+    id: "1",
     type: "login",
     description: "로그인",
-    createdAt: "2024-03-20 14:30:00",
-    ipAddress: "192.168.1.100",
-    details: {
-      browser: "Chrome",
-      os: "Windows",
-      device: "Desktop"
-    }
+    date: "2024-03-20 14:30:00",
   },
   {
-    id: 2,
+    id: "2",
     type: "profile_update",
     description: "프로필 정보 수정",
-    createdAt: "2024-03-19 11:20:00",
-    ipAddress: "192.168.1.100",
+    date: "2024-03-19 11:20:00",
   },
   {
-    id: 3,
+    id: "3",
     type: "password_change",
     description: "비밀번호 변경",
-    createdAt: "2024-03-18 09:15:00",
-    ipAddress: "192.168.1.100",
+    date: "2024-03-18 09:15:00",
   },
   {
-    id: 4,
+    id: "4",
     type: "logout",
     description: "로그아웃",
-    createdAt: "2024-03-18 09:00:00",
-    ipAddress: "192.168.1.100",
+    date: "2024-03-18 09:00:00",
   },
 ];
 
 // 더 많은 샘플 데이터 생성
 for (let i = 5; i <= 50; i++) {
   mockHistory.push({
-    id: i,
-    type: ["login", "logout", "profile_update", "password_change"][Math.floor(Math.random() * 4)] as HistoryItem["type"],
+    id: i.toString(),
+    type: ["login", "logout", "profile_update", "password_change"][Math.floor(Math.random() * 4)],
     description: "활동 내역",
-    createdAt: `2024-03-${String(Math.floor(Math.random() * 30) + 1).padStart(2, '0')} ${String(Math.floor(Math.random() * 24)).padStart(2, '0')}:${String(Math.floor(Math.random() * 60)).padStart(2, '0')}:00`,
-    ipAddress: "192.168.1." + Math.floor(Math.random() * 255),
-    details: {
-      browser: ["Chrome", "Firefox", "Safari"][Math.floor(Math.random() * 3)],
-      os: ["Windows", "MacOS", "Linux"][Math.floor(Math.random() * 3)],
-      device: ["Desktop", "Mobile", "Tablet"][Math.floor(Math.random() * 3)]
-    }
+    date: `2024-03-${String(Math.floor(Math.random() * 30) + 1).padStart(2, '0')} ${String(Math.floor(Math.random() * 24)).padStart(2, '0')}:${String(Math.floor(Math.random() * 60)).padStart(2, '0')}:00`,
   });
 }
 
-export default function MemberHistoryPage({ params }: { params: { id: string } }) {
+interface PageProps {
+  params: {
+    id: string;
+  };
+}
+
+export default async function Page({ params }: PageProps) {
+  // 비동기 함수로 변경
+  const history = await fetchMemberHistory(params.id); // 예시 함수
+  
   const router = useRouter();
-  const [history, setHistory] = useState<HistoryItem[]>(mockHistory);
   const [filteredHistory, setFilteredHistory] = useState<HistoryItem[]>(mockHistory);
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedType, setSelectedType] = useState<HistoryItem["type"] | "all">("all");
@@ -81,7 +71,7 @@ export default function MemberHistoryPage({ params }: { params: { id: string } }
     start: "",
     end: "",
   });
-  const [showDetails, setShowDetails] = useState<number | null>(null);
+  const [showDetails, setShowDetails] = useState<string | null>(null);
   const itemsPerPage = 10;
 
   // 필터링 적용
@@ -96,7 +86,7 @@ export default function MemberHistoryPage({ params }: { params: { id: string } }
     // 날짜 범위 필터
     if (dateRange.start && dateRange.end) {
       filtered = filtered.filter((item) => {
-        const itemDate = new Date(item.createdAt);
+        const itemDate = new Date(item.date);
         const start = new Date(dateRange.start);
         const end = new Date(dateRange.end);
         end.setHours(23, 59, 59); // 종료일 마지막 시간으로 설정
@@ -105,7 +95,7 @@ export default function MemberHistoryPage({ params }: { params: { id: string } }
     }
 
     // 날짜순 정렬
-    filtered.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    filtered.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
     setFilteredHistory(filtered);
     setCurrentPage(1); // 필터 변경시 첫 페이지로 이동
@@ -118,15 +108,14 @@ export default function MemberHistoryPage({ params }: { params: { id: string } }
   );
 
   const handleExportCSV = () => {
-    const headers = ["활동 유형", "설명", "IP 주소", "일시"];
+    const headers = ["활동 유형", "설명", "일시"];
     const csvContent = [
       headers.join(","),
       ...filteredHistory.map((item) =>
         [
-          getTypeText(item.type),
+          item.type,
           item.description,
-          item.ipAddress,
-          item.createdAt,
+          item.date,
         ].join(",")
       ),
     ].join("\n");
@@ -168,8 +157,12 @@ export default function MemberHistoryPage({ params }: { params: { id: string } }
     }
   };
 
+  const handleHistoryUpdate = (updatedHistory: HistoryItem) => {
+    // 여기에 업데이트 로직을 추가해야 합니다.
+  };
+
   return (
-    <div className="p-6">
+    <div className="container mx-auto px-4 py-8">
       <div className="flex items-center gap-4 mb-6">
         <button
           onClick={() => router.back()}
@@ -246,7 +239,6 @@ export default function MemberHistoryPage({ params }: { params: { id: string } }
               <tr>
                 <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">활동 유형</th>
                 <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">설명</th>
-                <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">IP 주소</th>
                 <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">일시</th>
               </tr>
             </thead>
@@ -261,27 +253,21 @@ export default function MemberHistoryPage({ params }: { params: { id: string } }
                     <td className="px-4 py-3">
                       <span
                         className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ${getTypeStyle(
-                          item.type
+                          item.type as HistoryItem["type"]
                         )}`}
                       >
-                        {getTypeText(item.type)}
+                        {getTypeText(item.type as HistoryItem["type"])}
                       </span>
                     </td>
                     <td className="px-4 py-3 text-sm">{item.description}</td>
-                    <td className="px-4 py-3 text-sm font-mono">{item.ipAddress}</td>
-                    <td className="px-4 py-3 text-sm">{item.createdAt}</td>
+                    <td className="px-4 py-3 text-sm">{item.date}</td>
                   </tr>
-                  {showDetails === item.id && item.details && (
+                  {showDetails === item.id && (
                     <tr>
-                      <td colSpan={4} className="px-4 py-3 bg-gray-50">
+                      <td colSpan={3} className="px-4 py-3 bg-gray-50">
                         <div className="text-sm space-y-1">
                           <h4 className="font-medium mb-2">상세 정보</h4>
-                          {Object.entries(item.details).map(([key, value]) => (
-                            <div key={key} className="flex gap-2">
-                              <span className="font-medium">{key}:</span>
-                              <span>{value}</span>
-                            </div>
-                          ))}
+                          {/* 상세 정보 표시 로직 추가 */}
                         </div>
                       </td>
                     </tr>
@@ -347,4 +333,10 @@ export default function MemberHistoryPage({ params }: { params: { id: string } }
       </div>
     </div>
   );
+}
+
+// 필요한 경우 fetchMemberHistory 함수 정의
+async function fetchMemberHistory(memberId: string) {
+  // API 호출 또는 데이터 가져오기 로직
+  return mockHistory; // mockHistory 데이터 반환
 } 

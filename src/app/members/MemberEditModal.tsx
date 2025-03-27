@@ -1,13 +1,29 @@
 import React, { useState } from 'react';
 import { X } from 'lucide-react';
 
-interface MemberEditModalProps {
-  member: any;
-  isOpen: boolean;
-  onClose: () => void;
+interface Member {
+  id: string;
+  nickname: string;
+  email: string;
+  phone: string;
+  status: string;
+  // ... 다른 필요한 속성들
 }
 
-const MemberEditModal = ({ member, isOpen, onClose }: MemberEditModalProps) => {
+interface MemberEditModalProps {
+  member: Member;
+  isOpen: boolean;
+  onClose: () => void;
+  onSave: (member: Member) => void;
+}
+
+interface FormData {
+  nickname: string;
+  email: string;
+  phone: string;
+}
+
+const MemberEditModal = ({ member, isOpen, onClose, onSave }: MemberEditModalProps) => {
   const [formData, setFormData] = useState({
     nickname: member.nickname,
     email: member.email,
@@ -17,6 +33,7 @@ const MemberEditModal = ({ member, isOpen, onClose }: MemberEditModalProps) => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // API 호출 및 데이터 업데이트 로직
+    onSave(member);
     onClose();
   };
 
@@ -27,7 +44,11 @@ const MemberEditModal = ({ member, isOpen, onClose }: MemberEditModalProps) => {
       <div className="bg-white rounded-lg w-[500px]">
         <div className="p-4 border-b flex justify-between items-center">
           <h2 className="text-xl font-bold">회원 정보 수정</h2>
-          <button onClick={onClose} className="btn btn-ghost btn-sm">
+          <button 
+            onClick={onClose} 
+            className="btn btn-ghost btn-sm"
+            title="닫기"
+          >
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -39,6 +60,7 @@ const MemberEditModal = ({ member, isOpen, onClose }: MemberEditModalProps) => {
             </label>
             <input
               type="text"
+              title="닉네임"
               value={formData.nickname}
               onChange={(e) => setFormData({ ...formData, nickname: e.target.value })}
               className="input input-bordered"
@@ -51,6 +73,7 @@ const MemberEditModal = ({ member, isOpen, onClose }: MemberEditModalProps) => {
             </label>
             <input
               type="email"
+              title="이메일"
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
               className="input input-bordered"
@@ -63,6 +86,7 @@ const MemberEditModal = ({ member, isOpen, onClose }: MemberEditModalProps) => {
             </label>
             <input
               type="text"
+              title="연락처"
               value={formData.phone}
               onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
               className="input input-bordered"

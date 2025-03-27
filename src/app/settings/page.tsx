@@ -76,26 +76,10 @@ const Checkbox = ({ label, checked = false, onChange }: {
 );
 
 // Toggle 컴포넌트 추가
-const Toggle = ({ label, checked = false, onChange }: {
-  label: string;
-  checked?: boolean;
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
-}) => (
-  <label className="flex items-center cursor-pointer">
-    <div className="relative">
-      <input
-        type="checkbox"
-        className="sr-only peer"
-        checked={checked}
-        onChange={onChange}
-      />
-      <div className="w-11 h-6 bg-gray-200 rounded-full peer 
-                    peer-checked:after:translate-x-full peer-checked:bg-orange-500
-                    after:content-[''] after:absolute after:top-0.5 after:left-[2px] 
-                    after:bg-white after:rounded-full after:h-5 after:w-5 
-                    after:transition-all border-2 border-transparent">
-      </div>
-    </div>
+const Toggle = ({ label, checked = false }: { label: string; checked?: boolean }) => (
+  <label className="relative inline-flex items-center cursor-pointer">
+    <input type="checkbox" className="sr-only peer" defaultChecked={checked} />
+    <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-orange-500"></div>
     <span className="ml-3 text-gray-700">{label}</span>
   </label>
 );
@@ -204,21 +188,23 @@ const SettingsPage = () => {
         <h2 className="text-xl font-semibold text-gray-800 mb-4">접근 시간 제한</h2>
         <div className="bg-white rounded-lg shadow p-6">
           <div className="flex items-center gap-4">
-            <input
-              type="time"
-              className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none 
-                       focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-            />
+            <label className="flex flex-col">
+              <span className="text-sm text-gray-600 mb-1">시작 시간</span>
+              <input
+                type="time"
+                title="시작 시간"
+                className="px-4 py-2 border border-gray-300 rounded-md"
+              />
+            </label>
             <span className="text-gray-500">~</span>
-            <input
-              type="time"
-              className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none 
-                       focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-            />
-            <button className="px-4 py-2 bg-orange-500 text-white rounded-md hover:bg-orange-600 
-                           transition-colors text-sm font-medium">
-              저장
-            </button>
+            <label className="flex flex-col">
+              <span className="text-sm text-gray-600 mb-1">종료 시간</span>
+              <input
+                type="time"
+                title="종료 시간"
+                className="px-4 py-2 border border-gray-300 rounded-md"
+              />
+            </label>
           </div>
         </div>
       </div>
@@ -413,6 +399,20 @@ const SettingsPage = () => {
       default:
         return null;
     }
+  };
+
+  // handleAddAdmin 타입 정의
+  interface NewAdmin {
+    id: string;
+    name: string;
+    email: string;
+    status: '활성' | '비활성';
+    role: string;
+    createdAt: string;
+  }
+
+  const handleAddAdmin = (newAdmin: NewAdmin) => {
+    setAdmins(prev => [...prev, newAdmin]);
   };
 
   return (

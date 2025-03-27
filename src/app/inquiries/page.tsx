@@ -13,7 +13,6 @@ import {
   ChevronDown,
   Download,
   Upload,
-  Eye,
   X,
   MessageCircle,
 } from "lucide-react";
@@ -115,14 +114,9 @@ const inquiryData: Inquiry[] = [
 const InquiryPage = () => {
   const [mounted, setMounted] = useState(false);
   const [inquiries, setInquiries] = useState<Inquiry[]>(inquiryData);
-  const [selectedInquiry, setSelectedInquiry] = useState<Inquiry | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState<StatusType | "전체">("전체");
   const [replyText, setReplyText] = useState("");
-  const [showStatusMenu, setShowStatusMenu] = useState(false);
-  const [statusAnchorEl, setStatusAnchorEl] = useState<null | HTMLElement>(
-    null
-  );
   const [showInquiryDetail, setShowInquiryDetail] = useState(false);
   const [answer, setAnswer] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -158,7 +152,6 @@ const InquiryPage = () => {
       )
     );
     setSelectedInquiry(updatedInquiry);
-    setShowStatusMenu(false);
   };
 
   // 답변 제출

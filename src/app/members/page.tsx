@@ -266,6 +266,10 @@ const MemberPage = () => {
     return members.filter(m => m.status === status).length;
   };
 
+  useEffect(() => {
+    setFilteredMembers(initialMembers);
+  }, [initialMembers]);
+
   return (
     <>
       <AdminLayout>

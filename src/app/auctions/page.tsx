@@ -4,7 +4,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import dynamic from 'next/dynamic';
-import { Gavel, Search, ListFilter, Eye, Pencil, Ban, X } from 'lucide-react';
+import { Gavel, Search, ListFilter } from 'lucide-react';
 import Image from "next/image";
 
 const AdminLayout = dynamic(() => import('@/components/layout/AdminLayout'), {
@@ -321,7 +321,7 @@ const AuctionPage = () => {
                 onClick={handleCloseModal}
                 className="p-2 hover:bg-gray-100 rounded-full"
               >
-                <X className="w-5 h-5" />
+                <ListFilter className="w-5 h-5" />
               </button>
             </div>
             
