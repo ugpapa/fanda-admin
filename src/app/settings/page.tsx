@@ -334,8 +334,8 @@ const SettingsPage = () => {
             className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none 
                      focus:ring-2 focus:ring-orange-500 focus:border-transparent"
           />
-          <button className="px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 
-                         transition-colors text-sm font-medium flex items-center gap-2">
+          <button className="px-6 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 
+                         transition-colors text-sm font-medium flex items-center gap-2 whitespace-nowrap min-w-[140px]">
             <FileText className="w-4 h-4" />
             로그 다운로드
           </button>
