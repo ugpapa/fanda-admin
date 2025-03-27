@@ -3,7 +3,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Plus, Edit, Trash2, FolderClosed, FolderOpen } from "lucide-react";
+import { Plus, Edit, Trash2, FolderClosed, FolderOpen, FolderTree } from "lucide-react";
 import AdminLayout from '@/components/layout/AdminLayout';
 import Modal from '@/components/common/Modal';
 
@@ -134,10 +134,13 @@ const CategoryPage = () => {
 
   return (
     <AdminLayout>
-      <div className="p-6 bg-gray-50 min-h-screen">
+      <div className="p-6">
+        <div className="flex items-center gap-3 mb-8">
+          <FolderTree className="w-6 h-6 text-gray-700" />
+          <h1 className="text-2xl font-bold text-gray-800">카테고리 관리</h1>
+        </div>
         <div className="bg-white rounded-lg shadow p-6">
           <div className="flex justify-between items-center mb-6">
-            <h1 className="text-2xl font-bold">카테고리 관리</h1>
             <button
               onClick={() => openAddModal()}
               className="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"

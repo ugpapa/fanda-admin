@@ -3,7 +3,7 @@
 import React from 'react';
 import AdminLayout from '@/components/layout/AdminLayout';
 import { useState } from "react";
-import { Search, Eye, Download } from "lucide-react";
+import { Search, Eye, Download, CreditCard } from "lucide-react";
 
 interface Escrow {
   id: number;
@@ -80,6 +80,10 @@ const EscrowPage = () => {
   return (
     <AdminLayout>
       <div className="p-6">
+        <div className="flex items-center gap-3 mb-8">
+          <CreditCard className="w-6 h-6 text-gray-700" />
+          <h1 className="text-2xl font-bold text-gray-800">에스크로 관리</h1>
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
           <div className="relative">
             <input

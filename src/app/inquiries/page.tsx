@@ -120,6 +120,7 @@ const InquiryPage = () => {
   const [showInquiryDetail, setShowInquiryDetail] = useState(false);
   const [answer, setAnswer] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedInquiry, setSelectedInquiry] = useState<Inquiry | null>(null);
 
   useEffect(() => {
     setMounted(true);
@@ -233,6 +234,11 @@ const InquiryPage = () => {
     setIsModalOpen(true);
   };
 
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedInquiry(null);
+  };
+
   if (!mounted) {
     return null;
   }
@@ -255,6 +261,10 @@ const InquiryPage = () => {
   return (
     <AdminLayout>
       <div className="p-6">
+        <div className="flex items-center gap-3 mb-8">
+          <MessageSquare className="w-6 h-6 text-gray-700" />
+          <h1 className="text-2xl font-bold text-gray-800">문의 관리</h1>
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           <div className="relative">
             <input
@@ -332,7 +342,7 @@ const InquiryPage = () => {
 
         <Modal
           isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
+          onClose={handleCloseModal}
           title={selectedInquiry ? `문의 상세 (No. ${selectedInquiry.id})` : "문의 상세"}
         >
           {selectedInquiry && (

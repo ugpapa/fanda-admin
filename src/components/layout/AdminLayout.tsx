@@ -134,12 +134,29 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   const getTitle = () => {
     switch (pathname) {
       case '/dashboard':
-        return '대시보드';
+        return 'Administrator Control Center';
       case '/mileage':
         return '마일리지 관리';
-      // ... 다른 페이지 타이틀들
+      case '/inquiries':
+        return '문의 관리';
+      case '/products':
+        return '상품 관리';
+      case '/auctions':
+        return '경매 관리';
+      case '/members':
+        return '회원 관리';
+      case '/contracts':
+        return '계약 관리';
+      case '/categories':
+        return '카테고리 관리';
+      case '/settings':
+        return '시스템 설정';
+      case '/escrow':
+        return '에스크로 관리';
+      case '/notices':
+        return '공지사항';
       default:
-        return '대시보드';
+        return 'Administrator Control Center';
     }
   };
 
@@ -148,75 +165,10 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   };
 
   return (
-    <div className="flex h-screen bg-gray-50">
-      {/* Sidebar for desktop */}
-      <aside className="hidden lg:flex lg:flex-col lg:w-64 bg-slate-500 border-r">
-        <div className="flex flex-col h-full">
-          {/* Logo */}
-          <div className="flex items-center p-4 border-b">
-            <Image
-              src="/admin-avatar.png"
-              alt="Admin Avatar"
-              width={40}
-              height={40}
-              className="rounded-full"
-            />
-            <div className="text-lg font-medium text-white ml-2">
-              호랭(일반관리자)
-            </div>
-          </div>
-
-          {/* Navigation */}
-          <nav className="flex-1 overflow-y-auto py-4">
-            <ul className="space-y-1 px-3">
-              {menuItems.map((item) => (
-                <li key={item.text}>
-                  <button
-                    onClick={() => handleMenuItemClick(item)}
-                    className={`
-                      flex items-center w-full px-3 py-2 text-sm rounded-lg text-white
-                      ${pathname === item.path 
-                        ? 'bg-slate-600' 
-                        : 'hover:bg-slate-600'
-                      }
-                    `}
-                  >
-                    {item.icon}
-                    <span className="ml-3">{item.text}</span>
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </nav>
-
-          {/* Logout button */}
-          <div className="p-4 border-t border-slate-400">
-            <button
-              onClick={handleLogout}
-              className="flex items-center w-full px-3 py-2 text-sm text-white rounded-lg hover:bg-slate-600"
-            >
-              <LogOut className="w-5 h-5" />
-              <span className="ml-3">로그아웃</span>
-            </button>
-          </div>
-        </div>
-      </aside>
-
-      {/* Mobile sidebar */}
-      <div
-        className={`
-          fixed inset-0 z-40 lg:hidden
-          ${mobileOpen ? 'block' : 'hidden'}
-        `}
-      >
-        {/* Backdrop */}
-        <div 
-          className="fixed inset-0 bg-gray-600 bg-opacity-50"
-          onClick={handleDrawerToggle}
-        />
-
-        {/* Sidebar */}
-        <aside className="fixed inset-y-0 left-0 w-64 bg-slate-600">
+    <div className="min-h-screen bg-gray-100">
+      <div className="flex h-screen bg-gray-50">
+        {/* Sidebar for desktop */}
+        <aside className="hidden lg:flex lg:flex-col lg:w-64 bg-slate-500 border-r">
           <div className="flex flex-col h-full">
             {/* Logo */}
             <div className="flex items-center p-4 border-b">
@@ -267,18 +219,85 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
             </div>
           </div>
         </aside>
-      </div>
 
-      {/* Main content */}
-      <div className="flex-1 flex flex-col overflow-hidden">
-        <header className="bg-white shadow-sm">
-          <div className="px-6 py-4">
-            <h1 className="text-2xl font-bold">{getTitle()}</h1>
-          </div>
-        </header>
-        <main className="flex-1 overflow-x-hidden overflow-y-auto">
-          {children}
-        </main>
+        {/* Mobile sidebar */}
+        <div
+          className={`
+            fixed inset-0 z-40 lg:hidden
+            ${mobileOpen ? 'block' : 'hidden'}
+          `}
+        >
+          {/* Backdrop */}
+          <div 
+            className="fixed inset-0 bg-gray-600 bg-opacity-50"
+            onClick={handleDrawerToggle}
+          />
+
+          {/* Sidebar */}
+          <aside className="fixed inset-y-0 left-0 w-64 bg-slate-600">
+            <div className="flex flex-col h-full">
+              {/* Logo */}
+              <div className="flex items-center p-4 border-b">
+                <Image
+                  src="/admin-avatar.png"
+                  alt="Admin Avatar"
+                  width={40}
+                  height={40}
+                  className="rounded-full"
+                />
+                <div className="text-lg font-medium text-white ml-2">
+                  호랭(일반관리자)
+                </div>
+              </div>
+
+              {/* Navigation */}
+              <nav className="flex-1 overflow-y-auto py-4">
+                <ul className="space-y-1 px-3">
+                  {menuItems.map((item) => (
+                    <li key={item.text}>
+                      <button
+                        onClick={() => handleMenuItemClick(item)}
+                        className={`
+                          flex items-center w-full px-3 py-2 text-sm rounded-lg text-white
+                          ${pathname === item.path 
+                            ? 'bg-slate-600' 
+                            : 'hover:bg-slate-600'
+                          }
+                        `}
+                      >
+                        {item.icon}
+                        <span className="ml-3">{item.text}</span>
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+
+              {/* Logout button */}
+              <div className="p-4 border-t border-slate-400">
+                <button
+                  onClick={handleLogout}
+                  className="flex items-center w-full px-3 py-2 text-sm text-white rounded-lg hover:bg-slate-600"
+                >
+                  <LogOut className="w-5 h-5" />
+                  <span className="ml-3">로그아웃</span>
+                </button>
+              </div>
+            </div>
+          </aside>
+        </div>
+
+        {/* Main content */}
+        <div className="flex-1 flex flex-col overflow-hidden">
+          <header className="bg-white shadow-sm">
+            <div className="px-6 py-4">
+              <h1 className="text-2xl font-bold">Administrator Control Center</h1>
+            </div>
+          </header>
+          <main className="flex-1 overflow-x-hidden overflow-y-auto">
+            {children}
+          </main>
+        </div>
       </div>
     </div>
   );

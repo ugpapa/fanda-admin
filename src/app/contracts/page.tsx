@@ -5,7 +5,7 @@
 import React from 'react';
 import AdminLayout from '@/components/layout/AdminLayout';
 import { useState } from "react";
-import { Eye, Download, Search } from "lucide-react";
+import { Eye, Download, Search, FileText } from "lucide-react";
 
 // 계약 타입 정의
 interface Contract {
@@ -82,6 +82,10 @@ const ContractsPage = () => {
   return (
     <AdminLayout>
       <div className="p-6">
+        <div className="flex items-center gap-3 mb-8">
+          <FileText className="w-6 h-6 text-gray-700" />
+          <h1 className="text-2xl font-bold text-gray-800">계약 관리</h1>
+        </div>
         {/* <div className="mb-6">
           <h1 className="text-2xl font-bold">계약 관리</h1>
           <p className="text-sm text-gray-500 mt-1">

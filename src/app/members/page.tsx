@@ -42,6 +42,7 @@ type TabType = "전체" | "활성" | "휴면" | "정지" | "탈퇴";
 
 const MemberPage = () => {
   const [members, setMembers] = useState<Member[]>([]);
+  const [filteredMembers, setFilteredMembers] = useState<Member[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState<TabType>("전체");
   const [showHistory, setShowHistory] = useState(false);
@@ -72,16 +73,19 @@ const MemberPage = () => {
   };
 
   // 필터링된 회원 목록
-  const filteredMembers = members.filter(member => {
-    const matchesSearch = searchTerm === "" || 
-      member.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      member.nickname.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      member.email.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    const matchesTab = activeTab === "전체" || member.status === activeTab;
-    
-    return matchesSearch && matchesTab;
-  });
+  useEffect(() => {
+    const filtered = members.filter(member => {
+      const matchesSearch = searchTerm === "" || 
+        member.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        member.nickname.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        member.email.toLowerCase().includes(searchTerm.toLowerCase());
+      
+      const matchesTab = activeTab === "전체" || member.status === activeTab;
+      
+      return matchesSearch && matchesTab;
+    });
+    setFilteredMembers(filtered);
+  }, [searchTerm, activeTab, members]);
 
   useEffect(() => {
     if (showEditDialog) {
@@ -266,10 +270,6 @@ const MemberPage = () => {
     return members.filter(m => m.status === status).length;
   };
 
-  useEffect(() => {
-    setFilteredMembers(initialMembers);
-  }, [initialMembers]);
-
   return (
     <>
       <AdminLayout>
@@ -300,7 +300,7 @@ const MemberPage = () => {
                 <div className="relative">
                   <input
                     type="text"
-                    placeholder="이름 또는 이메일 검색"
+                    placeholder="회원명 또는 이메일로 검색"
                     className="pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}

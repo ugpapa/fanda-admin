@@ -3,7 +3,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Search, Edit, Trash2, Plus } from "lucide-react";
+import { Search, Edit, Trash2, Plus, Bell } from "lucide-react";
 import dynamic from 'next/dynamic';
 import AdminLayout from '@/components/layout/AdminLayout';
 import Modal from '@/components/common/Modal';
@@ -182,18 +182,11 @@ const NoticePage = () => {
 
   return (
     <AdminLayout>
-      <div className='p-6'>
-        <div className='flex justify-between items-center mb-6'>
-          <h1 className="text-2xl font-bold">공지사항 관리</h1>
-          <button
-            onClick={() => setIsModalOpen(true)}
-            className="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
-          >
-            <Plus className="w-5 h-5" />
-            공지사항 작성
-          </button>
+      <div className="p-6">
+        <div className="flex items-center gap-3 mb-8">
+          <Bell className="w-6 h-6 text-gray-700" />
+          <h1 className="text-2xl font-bold text-gray-800">공지사항</h1>
         </div>
-
         <div className='flex justify-between items-center mb-6'>
           <div className='flex gap-4 items-center flex-1 max-w-2xl'>
             <select
