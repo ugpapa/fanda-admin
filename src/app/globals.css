@@ -1,26 +1,102 @@
-@import "tailwindcss";
+/** @format */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  
+  --primary-50: #f5f8ff;
+  --primary-100: #ebf1ff;
+  --primary-200: #d6e4ff;
+  --primary-300: #c2d6ff;
+  --primary-400: #99bbff;
+  --primary-500: #709fff;
+  --primary-600: #3d75ff;
+  --primary-700: #1a56ff;
+  --primary-800: #0042ff;
+  --primary-900: #0036d9;
+  --primary-950: #002db3;
+  
+  --gray-50: #f9fafb;
+  --gray-100: #f3f4f6;
+  --gray-200: #e5e7eb;
+  --gray-300: #d1d5db;
+  --gray-400: #9ca3af;
+  --gray-500: #6b7280;
+  --gray-600: #4b5563;
+  --gray-700: #374151;
+  --gray-800: #1f2937;
+  --gray-900: #111827;
+  --gray-950: #030712;
+  
+  --success: #22c55e;
+  --warning: #eab308;
+  --error: #ef4444;
+  
+  --radius-sm: 0.25rem;
+  --radius: 0.5rem;
+  --radius-lg: 0.75rem;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+.dark {
+  --background: #171717;
+  --foreground: #ffffff;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  * {
+    @apply border-gray-200;
   }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  
+  body {
+    @apply bg-[--background] text-[--foreground];
+  }
+  
+  input, select, textarea {
+    @apply w-full px-3 py-2 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent;
+  }
+  
+  button {
+    @apply px-4 py-2 rounded transition-colors;
+  }
+  
+  button[type="submit"], 
+  button.primary {
+    @apply bg-primary-600 text-white hover:bg-primary-700;
+  }
+  
+  button.secondary {
+    @apply bg-gray-100 text-gray-700 hover:bg-gray-200;
+  }
+  
+  button.outline {
+    @apply border border-gray-200 hover:bg-gray-50;
+  }
+  
+  table {
+    @apply w-full;
+  }
+  
+  thead {
+    @apply bg-gray-100;
+  }
+  
+  th {
+    @apply px-4 py-2 text-left text-sm font-medium text-gray-700;
+  }
+  
+  td {
+    @apply px-4 py-2 text-sm;
+  }
+  
+  tr {
+    @apply border-b border-gray-200;
+  }
+  
+  tbody tr:hover {
+    @apply bg-gray-50;
+  }
 }
