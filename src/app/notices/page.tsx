@@ -7,6 +7,7 @@ import { Search, Edit, Trash2, Plus, Bell } from "lucide-react";
 import dynamic from 'next/dynamic';
 import AdminLayout from '@/components/layout/AdminLayout';
 import Modal from '@/components/common/Modal';
+import LoadingSpinner from '@/components/common/LoadingSpinner';
 
 interface Notice {
   id: string;
@@ -27,12 +28,24 @@ interface Notice {
 // 모달 컴포넌트를 동적으로 임포트
 const NoticeDetailModal = dynamic(() => import('./NoticeDetailModal').then(mod => mod.default), {
   ssr: false,
-  loading: () => <div>Loading...</div>
+  loading: () => (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-white rounded-lg p-8">
+        <LoadingSpinner size="lg" />
+      </div>
+    </div>
+  )
 });
 
 const NoticeFormModal = dynamic(() => import('./NoticeFormModal').then(mod => mod.default), {
   ssr: false,
-  loading: () => <div>Loading...</div>
+  loading: () => (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-white rounded-lg p-8">
+        <LoadingSpinner size="lg" />
+      </div>
+    </div>
+  )
 });
 
 // 초기 데이터
