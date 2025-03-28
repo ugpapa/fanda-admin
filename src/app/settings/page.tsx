@@ -4,7 +4,7 @@
 
 import React, { useState } from 'react';
 import dynamic from 'next/dynamic';
-import { Settings, Users, Shield, Key, Bell, FileText, Lock } from 'lucide-react';
+import { Settings, Users, Shield, Key, Bell, FileText, Lock, Plus, X, Check } from 'lucide-react';
 
 const AdminLayout = dynamic(() => import('@/components/layout/AdminLayout'), {
   ssr: false
@@ -21,6 +21,8 @@ interface AdminUser {
   status: '활성' | '비활성';
   role: string;
   createdAt: string;
+  phone: string;
+  isVerified: boolean;
 }
 
 // 초기 관리자 데이터
@@ -31,7 +33,9 @@ const initialAdmins: AdminUser[] = [
     email: 'admin1@example.com',
     status: '활성',
     role: '슈퍼관리자',
-    createdAt: '2024-03-20'
+    createdAt: '2024-03-20',
+    phone: '010-0000-0000',
+    isVerified: true
   },
   {
     id: '2',
@@ -39,7 +43,9 @@ const initialAdmins: AdminUser[] = [
     email: 'editor@example.com',
     status: '활성',
     role: '에디터',
-    createdAt: '2024-03-21'
+    createdAt: '2024-03-21',
+    phone: '010-1111-1111',
+    isVerified: false
   }
 ];
 
@@ -87,6 +93,34 @@ const Toggle = ({ label, checked = false }: { label: string; checked?: boolean }
 const SettingsPage = () => {
   const [activeTab, setActiveTab] = useState<TabType>('계정 관리');
   const [admins, setAdmins] = useState<AdminUser[]>(initialAdmins);
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [selectedAdmin, setSelectedAdmin] = useState<AdminUser | null>(null);
+  
+  // 폼 상태 관리
+  const [formData, setFormData] = useState({
+    email: '',
+    password: '',
+    passwordConfirm: '',
+    phone: '',
+    name: '',
+    role: '일반관리자',
+    verificationCode: ''
+  });
+  
+  // 전화번호 인증 상태
+  const [isPhoneVerifying, setIsPhoneVerifying] = useState(false);
+  const [isPhoneVerified, setIsPhoneVerified] = useState(false);
+  
+  // 에러 메시지 상태
+  const [errors, setErrors] = useState({
+    email: '',
+    password: '',
+    passwordConfirm: '',
+    phone: '',
+    name: '',
+    verificationCode: ''
+  });
 
   // 탭 설정
   const tabs: { id: TabType; icon: React.ReactNode }[] = [
@@ -103,8 +137,12 @@ const SettingsPage = () => {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h2 className="text-xl font-semibold text-gray-800">관리자 계정 목록</h2>
-        <button className="px-4 py-2 bg-orange-500 text-white rounded-md hover:bg-orange-600 
-                         transition-colors text-sm font-medium">
+        <button
+          onClick={() => setShowAddModal(true)}
+          className="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 
+                   transition-colors text-sm font-medium"
+        >
+          <Plus className="w-4 h-4" />
           관리자 추가
         </button>
       </div>
@@ -134,7 +172,15 @@ const SettingsPage = () => {
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{admin.role}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{admin.createdAt}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
-                  <button className="text-orange-600 hover:text-orange-900">수정</button>
+                  <button
+                    onClick={() => {
+                      setSelectedAdmin(admin);
+                      setShowEditModal(true);
+                    }}
+                    className="text-orange-600 hover:text-orange-900"
+                  >
+                    수정
+                  </button>
                   <button className="text-red-600 hover:text-red-900">삭제</button>
                 </td>
               </tr>
@@ -401,18 +447,95 @@ const SettingsPage = () => {
     }
   };
 
-  // handleAddAdmin 타입 정의
-  interface NewAdmin {
-    id: string;
-    name: string;
-    email: string;
-    status: '활성' | '비활성';
-    role: string;
-    createdAt: string;
-  }
+  // 폼 입력 핸들러
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+    
+    // 에러 메시지 초기화
+    setErrors(prev => ({
+      ...prev,
+      [name]: ''
+    }));
+  };
 
-  const handleAddAdmin = (newAdmin: NewAdmin) => {
-    setAdmins(prev => [...prev, newAdmin]);
+  // 전화번호 인증 요청
+  const handleRequestVerification = () => {
+    if (!formData.phone) {
+      setErrors(prev => ({
+        ...prev,
+        phone: '전화번호를 입력해주세요.'
+      }));
+      return;
+    }
+    setIsPhoneVerifying(true);
+    // TODO: 실제 인증번호 발송 로직 구현
+    // 인증번호 발송 성공 시 알림
+    alert('인증번호가 발송되었습니다.');
+  };
+
+  // 인증번호 확인
+  const handleVerifyCode = () => {
+    if (!formData.verificationCode) {
+      setErrors(prev => ({
+        ...prev,
+        verificationCode: '인증번호를 입력해주세요.'
+      }));
+      return;
+    }
+    // TODO: 실제 인증번호 확인 로직 구현
+    setIsPhoneVerified(true);
+  };
+
+  // 폼 제출
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    // 유효성 검사
+    let hasError = false;
+    const newErrors = { ...errors };
+    
+    if (!formData.email) {
+      newErrors.email = '이메일을 입력해주세요.';
+      hasError = true;
+    }
+    
+    if (!formData.password) {
+      newErrors.password = '비밀번호를 입력해주세요.';
+      hasError = true;
+    }
+    
+    if (formData.password !== formData.passwordConfirm) {
+      newErrors.passwordConfirm = '비밀번호가 일치하지 않습니다.';
+      hasError = true;
+    }
+    
+    if (!formData.phone) {
+      newErrors.phone = '전화번호를 입력해주세요.';
+      hasError = true;
+    }
+    
+    if (!isPhoneVerified) {
+      newErrors.phone = '전화번호 인증이 필요합니다.';
+      hasError = true;
+    }
+    
+    if (!formData.name) {
+      newErrors.name = '이름을 입력해주세요.';
+      hasError = true;
+    }
+    
+    if (hasError) {
+      setErrors(newErrors);
+      return;
+    }
+    
+    // TODO: API 호출하여 관리자 추가
+    console.log('Submit form data:', formData);
+    setShowAddModal(false);
   };
 
   return (
@@ -444,6 +567,191 @@ const SettingsPage = () => {
         <div className="bg-white rounded-lg shadow p-6">
           {renderTabContent()}
         </div>
+
+        {/* 관리자 추가 모달 */}
+        {showAddModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white rounded-lg p-6 w-full max-w-md">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl font-bold">관리자 추가</h2>
+                <button
+                  onClick={() => setShowAddModal(false)}
+                  className="p-2 hover:bg-gray-100 rounded-full"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    관리자 아이디(이메일)
+                  </label>
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border rounded-md"
+                    placeholder="example@email.com"
+                  />
+                  {errors.email && (
+                    <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    비밀번호
+                  </label>
+                  <input
+                    type="password"
+                    name="password"
+                    value={formData.password}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border rounded-md"
+                  />
+                  {errors.password && (
+                    <p className="text-red-500 text-sm mt-1">{errors.password}</p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    비밀번호 확인
+                  </label>
+                  <input
+                    type="password"
+                    name="passwordConfirm"
+                    value={formData.passwordConfirm}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border rounded-md"
+                  />
+                  {errors.passwordConfirm && (
+                    <p className="text-red-500 text-sm mt-1">{errors.passwordConfirm}</p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    연락처
+                  </label>
+                  <div className="flex gap-2">
+                    <input
+                      type="tel"
+                      name="phone"
+                      value={formData.phone}
+                      onChange={handleInputChange}
+                      className="flex-1 px-3 py-2 border rounded-md"
+                      placeholder="010-0000-0000"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleRequestVerification}
+                      disabled={isPhoneVerified}
+                      className={`px-4 py-2 rounded-md whitespace-nowrap ${
+                        isPhoneVerified
+                          ? 'bg-green-500 text-white'
+                          : 'bg-blue-500 text-white hover:bg-blue-600'
+                      }`}
+                    >
+                      {isPhoneVerified ? (
+                        <Check className="w-4 h-4" />
+                      ) : (
+                        '인증요청'
+                      )}
+                    </button>
+                  </div>
+                  {errors.phone && (
+                    <p className="text-red-500 text-sm mt-1">{errors.phone}</p>
+                  )}
+                </div>
+
+                {isPhoneVerifying && !isPhoneVerified && (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      인증번호
+                    </label>
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        name="verificationCode"
+                        value={formData.verificationCode}
+                        onChange={handleInputChange}
+                        className="flex-1 px-3 py-2 border rounded-md"
+                        placeholder="인증번호 6자리"
+                        maxLength={6}
+                      />
+                      <button
+                        type="button"
+                        onClick={handleVerifyCode}
+                        className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 whitespace-nowrap"
+                      >
+                        확인
+                      </button>
+                    </div>
+                    {errors.verificationCode && (
+                      <p className="text-red-500 text-sm mt-1">{errors.verificationCode}</p>
+                    )}
+                  </div>
+                )}
+
+                {isPhoneVerified && (
+                  <p className="text-green-500 text-sm mt-1">
+                    전화번호 인증이 완료되었습니다.
+                  </p>
+                )}
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    실명
+                  </label>
+                  <input
+                    type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border rounded-md"
+                  />
+                  {errors.name && (
+                    <p className="text-red-500 text-sm mt-1">{errors.name}</p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    관리자 등급
+                  </label>
+                  <select
+                    name="role"
+                    value={formData.role}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border rounded-md"
+                  >
+                    <option value="일반관리자">일반관리자</option>
+                    <option value="최고관리자">최고관리자</option>
+                  </select>
+                </div>
+
+                <div className="flex justify-end gap-2 mt-6">
+                  <button
+                    type="button"
+                    onClick={() => setShowAddModal(false)}
+                    className="px-4 py-2 border rounded-md hover:bg-gray-50"
+                  >
+                    취소
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+                  >
+                    추가
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
       </div>
     </AdminLayout>
   );
