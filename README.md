@@ -1,97 +1,102 @@
-# 판다 어드민 대시보드 (Fanda Admin Dashboard)
+# Fanda Admin Dashboard
 
-농산물 거래 플랫폼 '판다'의 관리자 대시보드입니다. 회원, 상품, 거래액, 마일리지 등의 현황을 실시간으로 모니터링할 수 있습니다.
+## 소개 (Introduction)
+판다 어드민 대시보드는 관리자가 회원, 상품, 경매, 마일리지 등을 효율적으로 관리할 수 있는 관리자 플랫폼입니다.
 
-## 주요 기능
+The Fanda Admin Dashboard is an administrative platform that enables efficient management of members, products, auctions, mileage, and more.
 
-- **실시간 통계 현황**
-  - 회원 현황 (총 회원수, 신규 가입자 등)
-  - 상품 현황 (등록 상품, 신규 등록 등)
-  - 거래액 현황 (총 거래액, 일별/주별/월별 거래액)
-  - 마일리지 현황 (총 마일리지, 사용량 등)
+## 주요 기능 (Key Features)
 
-- **데이터 시각화**
-  - 거래/마일리지 통계 그래프 (월별/주별/일별)
-  - 회원/상품 현황 그래프 (월별/주별/일별)
-  - 실시간 알림 시스템
+### 대시보드 (Dashboard)
+- 실시간 거래 통계 / Real-time transaction statistics
+- 회원 현황 모니터링 / Member status monitoring
+- 상품 등록 현황 / Product registration status
+- 마일리지 사용 현황 / Mileage usage status
 
-## 기술 스택
+### 회원 관리 (Member Management)
+- 회원 목록 조회 및 검색 / View and search member list
+- 회원 상세 정보 관리 / Manage member details
+- 회원 이용 기록 확인 / Check member usage history
+- 회원 상태 관리 / Manage member status
 
-- **Frontend**
-  - Next.js 15
-  - React 19
-  - TypeScript
-  - TailwindCSS
-  - ApexCharts
+### 상품 관리 (Product Management)
+- 상품 등록 및 수정 / Register and modify products
+- 카테고리 관리 / Category management
+- 상품 상태 관리 / Product status management
+- 상품 검색 및 필터링 / Product search and filtering
 
-- **Backend**
-  - Prisma
-  - NextAuth.js
+### 경매 관리 (Auction Management)
+- 경매 현황 모니터링 / Monitor auction status
+- 경매 내역 관리 / Manage auction history
+- 입찰 현황 확인 / Check bidding status
+- 낙찰 처리 / Process successful bids
 
-## 시작하기
+### 마일리지 관리 (Mileage Management)
+- 마일리지 지급 및 차감 / Issue and deduct mileage
+- 마일리지 사용 내역 조회 / View mileage usage history
+- 마일리지 정책 관리 / Manage mileage policies
 
-### 필수 요구사항
+### 시스템 설정 (System Settings)
+- 관리자 계정 관리 / Manage administrator accounts
+- 시스템 공지사항 관리 / Manage system notifications
+- 기본 설정 관리 / Manage basic settings
 
-- Node.js 18.0.0 이상
-- npm 또는 yarn
+## 기술 스택 (Tech Stack)
+- Next.js 14
+- TypeScript
+- Tailwind CSS
+- Lucide React (Icons)
+- ApexCharts (Charts)
 
-### 설치 방법
+## 시작하기 (Getting Started)
 
+### 설치 (Installation)
 ```bash
-# 저장소 클론
-git clone https://github.com/ugpapa/fanda-admin.git
-
-# 디렉토리 이동
-cd fanda-admin
-
-# 의존성 설치
 npm install
-# 또는
-yarn install
-
-# 개발 서버 실행
-npm run dev
-# 또는
-yarn dev
 ```
 
-### 환경 변수 설정
+### 개발 서버 실행 (Run Development Server)
+```bash
+npm run dev
+```
 
-`.env.local` 파일을 생성하고 다음 환경 변수를 설정하세요:
+### 빌드 (Build)
+```bash
+npm run build
+```
+
+### 프로덕션 서버 실행 (Run Production Server)
+```bash
+npm start
+```
+
+## 환경 설정 (Environment Configuration)
+프로젝트 루트에 `.env.local` 파일을 생성하고 필요한 환경 변수를 설정하세요.
+Create a `.env.local` file in the project root and set the required environment variables.
 
 ```env
-DATABASE_URL="your-database-url"
-NEXTAUTH_SECRET="your-nextauth-secret"
-NEXTAUTH_URL="http://localhost:3000"
+NEXT_PUBLIC_API_URL=your_api_url
 ```
 
-## 배포
+## 브라우저 지원 (Browser Support)
+- Chrome (latest)
+- Firefox (latest)
+- Safari (latest)
+- Edge (latest)
 
-```bash
-# 프로덕션 빌드
-npm run build
-# 또는
-yarn build
+## 라이선스 (License)
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-# 프로덕션 서버 시작
-npm run start
-# 또는
-yarn start
-```
+## 기여하기 (Contributing)
+프로젝트 기여는 언제나 환영합니다. 버그 리포트, 새로운 기능 제안, 또는 코드 기여를 통해 참여해주세요.
 
-## 라이선스
+Contributions are always welcome. Please feel free to submit bug reports, feature suggestions, or contribute code.
 
-이 프로젝트는 MIT 라이선스를 따릅니다. 자세한 내용은 [LICENSE](LICENSE) 파일을 참조하세요.
-
-## 기여하기
-
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-## 연락처
-
-- 개발자: @ugpapa
-- 프로젝트 링크: https://github.com/ugpapa/fanda-admin
+## 연락처 (Contact)
+프로젝트 관리자 (Project Manager): [이메일 주소 / Email Address]
