@@ -2,11 +2,13 @@
 
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { Settings, Users, Shield, Key, Bell, FileText, Lock, Plus, X, Check } from 'lucide-react';
+import AdminLayout from '@/components/layout/AdminLayout';
+import LoadingSpinner from '@/components/common/LoadingSpinner';
 
-const AdminLayout = dynamic(() => import('@/components/layout/AdminLayout'), {
+const AdminLayoutComponent = dynamic(() => import('@/components/layout/AdminLayout'), {
   ssr: false
 });
 
@@ -91,6 +93,7 @@ const Toggle = ({ label, checked = false }: { label: string; checked?: boolean }
 );
 
 const SettingsPage = () => {
+  const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<TabType>('계정 관리');
   const [admins, setAdmins] = useState<AdminUser[]>(initialAdmins);
   const [showAddModal, setShowAddModal] = useState(false);
@@ -131,6 +134,38 @@ const SettingsPage = () => {
     { id: '알림 설정', icon: <Bell className="w-4 h-4" /> },
     { id: '감사 로그', icon: <FileText className="w-4 h-4" /> },
   ];
+
+  // 초기 데이터 로딩
+  useEffect(() => {
+    const fetchAdminUsers = async () => {
+      try {
+        setIsLoading(true);
+        // TODO: API 호출하여 관리자 목록 가져오기
+        // const response = await fetch('/api/admin-users');
+        // const data = await response.json();
+        
+        // 임시 데이터 로딩 시뮬레이션
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+      } catch (error) {
+        console.error('Failed to fetch admin users:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchAdminUsers();
+  }, []);
+
+  if (isLoading) {
+    return (
+      <AdminLayout>
+        <div className="flex justify-center items-center min-h-screen">
+          <LoadingSpinner />
+        </div>
+      </AdminLayout>
+    );
+  }
 
   // 계정 관리 컴포넌트
   const AccountManagement = () => (
@@ -541,9 +576,18 @@ const SettingsPage = () => {
   return (
     <AdminLayout>
       <div className="p-6 bg-gray-50 min-h-screen">
-        <div className="flex items-center gap-3 mb-8">
-          <Settings className="w-6 h-6 text-gray-700" />
-          <h1 className="text-2xl font-bold text-gray-800">시스템 설정</h1>
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-3">
+            <Users className="w-6 h-6 text-gray-700" />
+            <h1 className="text-2xl font-bold text-gray-800">관리자 설정</h1>
+          </div>
+          <button
+            onClick={() => setShowAddModal(true)}
+            className="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+          >
+            <Plus className="w-4 h-4" />
+            관리자 추가
+          </button>
         </div>
 
         <div className="bg-white rounded-lg shadow mb-6">
