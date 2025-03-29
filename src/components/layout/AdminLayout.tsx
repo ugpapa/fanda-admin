@@ -82,11 +82,6 @@ const menuItems = [
     path: "/categories",
   },
   {
-    text: "시스템 설정",
-    icon: <Settings className='h-5 w-5' />,
-    path: "/settings",
-  },
-  {
     text: "에스크로 관리",
     icon: <Shield className='h-5 w-5' />,
     path: "/escrow",
@@ -100,6 +95,16 @@ const menuItems = [
     text: "문의 관리",
     icon: <HelpCircle className='h-5 w-5' />,
     path: "/inquiries",
+  },
+  {
+    text: "FAQ 관리",
+    icon: <HelpCircle className='h-5 w-5' />,
+    path: "/faq",
+  },
+  {
+    text: "시스템 설정",
+    icon: <Settings className='h-5 w-5' />,
+    path: "/settings",
   },
 ];
 

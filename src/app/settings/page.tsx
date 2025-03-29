@@ -581,13 +581,6 @@ const SettingsPage = () => {
             <Users className="w-6 h-6 text-gray-700" />
             <h1 className="text-2xl font-bold text-gray-800">관리자 설정</h1>
           </div>
-          <button
-            onClick={() => setShowAddModal(true)}
-            className="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
-          >
-            <Plus className="w-4 h-4" />
-            관리자 추가
-          </button>
         </div>
 
         <div className="bg-white rounded-lg shadow mb-6">
