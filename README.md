@@ -99,4 +99,4 @@ Contributions are always welcome. Please feel free to submit bug reports, featur
 5. Open a Pull Request
 
 ## 연락처 (Contact)
-프로젝트 관리자 (Project Manager): [이메일 주소 / Email Address]
+프로젝트 관리자 (Project Manager): [ 양용석 / ugpapa@gmail.com]
